@@ -30,8 +30,6 @@ do
     fi
 done
 
-export LD_LIBRARY_PATH=$WORKSPACE/shared/install/lib:$WORKSPACE/serial-shared/install/lib:$LD_LIBRARY_PATH
-
 export BUILDTHREADS=16
 export TESTTHREADS=16
 export CTEST_TIMEOUT=400
