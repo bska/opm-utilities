@@ -27,3 +27,7 @@ update-alternatives --install /usr/bin/gcov gcov-14 /usr/bin/gcov-14 100
 
 ln -sf /usr/bin/ccache /usr/lib/ccache/clang
 ln -sf /usr/bin/ccache /usr/lib/ccache/clang++
+
+# For some reason LLD links to libcuda.so.1 when we link to libcuda.so. Workaround
+ln -sf /usr/local/cuda-13.0/targets/x86_64-linux/lib/stubs/libcuda.so /usr/local/lib/libcuda.so.1
+ldconfig

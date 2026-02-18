@@ -18,8 +18,6 @@ do
     CMAKE_TOOLCHAIN_FILES+=" /toolchains/${BTYPE}.cmake"
 done
 
-export LD_LIBRARY_PATH=$WORKSPACE/shared/install/lib:$LD_LIBRARY_PATH
-
 export BUILDTHREADS=12
 export TESTTHREADS=16
 export CTEST_TIMEOUT=10000

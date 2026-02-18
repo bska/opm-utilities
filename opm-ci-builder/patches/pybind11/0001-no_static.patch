@@ -1,0 +1,18 @@
+--- pybind11/include/pybind11/detail/type_caster_base.h.orig	2026-02-17 07:34:51.593658781 +0000
++++ pybind11/include/pybind11/detail/type_caster_base.h	2026-02-17 07:35:53.180789417 +0000
+@@ -515,13 +515,12 @@
+     smart_holder &holder() const { return loaded_v_h.holder<smart_holder>(); }
+ 
+     void throw_if_uninitialized_or_disowned_holder(const char *typeid_name) const {
+-        static const std::string missing_value_msg = "Missing value for wrapped C++ type `";
+         if (!holder().is_populated) {
+-            throw value_error(missing_value_msg + clean_type_id(typeid_name)
++            throw value_error(std::string("Missing value for wrapped C++ type `") + clean_type_id(typeid_name)
+                               + "`: Python instance is uninitialized.");
+         }
+         if (!holder().has_pointee()) {
+-            throw value_error(missing_value_msg + clean_type_id(typeid_name)
++            throw value_error(std::string("Missing value for wrapped C++ type `") + clean_type_id(typeid_name)
+                               + "`: Python instance was disowned.");
+         }
+     }
