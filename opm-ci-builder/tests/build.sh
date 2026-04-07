@@ -81,6 +81,16 @@ then
     then
       git checkout -b base_branch
       ghprbCommentBody+=" opm-tests=base_branch"
+
+      # need to unroll these as we have to use absolute revs
+      # to use the local modified opm-tests
+      if grep -q https://github.com <<< $REPO_ROOT
+      then
+        ghprbCommentBody=$(echo $ghprbCommentBody | \
+                           sed -r -e 's/opm-common=([0-9]+)/opm-common=pull\/\1\/merge/g' \
+                                  -e 's/opm-grid=([0-9]+)/opm-grid=pull\/\1\/merge/g' \
+                                  -e 's/opm-simulators=([0-9]+)/opm-simulators=pull\/\1\/merge/g')
+      fi
       REPO_ROOT+=" -e absolute_revisions=1 -e OPM_TESTS_UPSTREAM=/build/opm-tests-patched"
     fi
 
