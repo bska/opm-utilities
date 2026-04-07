@@ -28,13 +28,20 @@ then
     ghprbCommentBody+=" $TRIGGER"
 fi
 
-if grep -q "$OPM_MODULE" <<< $ghprbCommentBody
+if [ "$OPM_MODULE" = "opm-tests" ]
+then
+    MODULE_TO_CLONE=opm-simulators
+else
+    MODULE_TO_CLONE=${OPM_MODULE}
+fi
+
+if grep -q "$MODULE_TO_CLONE" <<< $ghprbCommentBody
 then
     if grep -q -v https://github.com <<< $REPO_ROOT
     then
-        sha1=$(echo $ghprbCommentBody | sed -r "s/.*${OPM_MODULE}=([^ ]+)/\1/g")
+        sha1=$(echo $ghprbCommentBody | sed -r "s/.*${MODULE_TO_CLONE}=([^ ]+)/\1/g")
     else
-        sha1=pull/$(echo $ghprbCommentBody | sed -r "s/.*${OPM_MODULE}=([0-9]+).*/\1/g")/merge
+        sha1=pull/$(echo $ghprbCommentBody | sed -r "s/.*${MODULE_TO_CLONE}=([0-9]+).*/\1/g")/merge
     fi
 fi
 
@@ -42,12 +49,6 @@ fi
 # Use git-init + git-fetch (not git-clone -b) so that GitHub PR refs
 # like pull/N/merge are resolved correctly.
 sha1=${sha1:-master}
-if [ "$OPM_MODULE" = "opm-tests" ]
-then
-    MODULE_TO_CLONE=opm-simulators
-else
-    MODULE_TO_CLONE=${OPM_MODULE}
-fi
 echo "Cloning ${REPO_ROOT}/${MODULE_TO_CLONE} ref ${sha1} into ${ROOT_DIR}"
 mkdir -p ${ROOT_DIR}
 pushd ${ROOT_DIR}
