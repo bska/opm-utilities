@@ -13,7 +13,7 @@
 # $ docker run -v <HOST_DIR>:/shared_host opm_docker_image flow output_dir="/shared_host/output" "/shared_host/<DECK>"
 
 # Use most recent version of ubuntu
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 ARG opm_version=release
 
