@@ -2,31 +2,37 @@
 #
 # A small script to generate macOS pip wheels of opm-common Python,
 # saved in the weelhouse folder created at the execution's location. 
-# Takes as arguments the opm-common branch (default "master"),
+# Takes as arguments the opm-common tag (default "release/2026.04/final"),
 # the no. version of macOS (default "14.0"), architecture (default 
-# "arm64", and number of cores to build opmcommon_python (default "5").
+# "arm64", and number of cores to build opmcommon_python (default "16").
 #
-# Example: Generate the macOS wheels for the 2026.04 release
+# Example: Generate the macOS wheels for the release/2026.04/final tag
 # for macOS 14 (Sonoma) arm64 using five cores.
 #
-#    sh path/to/opm-utilities/macos-scripts/macos_opm-common_python_packaging.sh release/2026.04 14.0 arm64 5
+#    . ./macos_opm-common_python_packaging.sh release/2026.04/final 14.0 arm64 16
 #
 
 set -e
 
-BRANCH=${1:-master}
+TAG=${1:-release/2026.04/final}
 VERSION=${2:-14.0} #change to 26.0 when it works, now pip complains about unsupported platform tag
 ARCHITECTURE=${3:-arm64}
-JOBS=${4:-11}
+JOBS=${4:-16}
 
-brew install boost #cmake is already pre-installed on GitHub-hosted runners
+brew install boost ninja #cmake is already pre-installed on GitHub-hosted runners
 
 if [ -d opm-common ]; then
     rm -rf opm-common
 fi
-git clone https://github.com/OPM/opm-common.git --branch $BRANCH
+git clone --branch $TAG --single-branch --depth 1 https://github.com/OPM/opm-common.git
 
 opm_version=$(grep "Version" opm-common/dune.module)
+
+if [[ "${opm_version:14:1}" == "0" ]]; then
+    opm_version=${opm_version:9:5}${opm_version:15:1}
+else
+    opm_version=${opm_version:9:7}
+fi
 
 declare -A python_versions
 python_versions[cp39-cp39]=/opt/homebrew/bin/python3.9
@@ -61,11 +67,8 @@ do  if [ -d $tag ]; then
     rm -rf $tag 
     ${python_versions[$tag]} -m venv v$tag
     source v$tag/bin/activate
-    if [[ "${opm_version:14:1}" == "0" ]]; then
-      pip install wheelhouse/opm-${opm_version:9:5}${opm_version:15:1}-$tag-macosx_${VERSION:0:2}_${VERSION: -1}_$ARCHITECTURE.whl
-    else
-      pip install wheelhouse/opm-${opm_version:9:7}-$tag-macosx_${VERSION:0:2}_${VERSION: -1}_$ARCHITECTURE.whl
-    fi
+    python3 -m pip install pip --upgrade
+    pip install wheelhouse/opm-${opm_version}-$tag-macosx_${VERSION:0:2}_${VERSION: -1}_$ARCHITECTURE.whl
     python -m unittest discover -s opm-common/python/tests
     deactivate
     rm -rf v$tag
