@@ -4,7 +4,7 @@ set -e
 # A small script that builds and installs each module with the others
 # already installed (and not still lying around next to it) in favirious
 # flavors
-RELEASE=2024.04
+RELEASE=2026.04
 branch=release/$RELEASE
 BUILD_CONFIGS="opts-parallel.cmake opts-seq.cmake"
 
@@ -45,7 +45,7 @@ while test $# -gt 0; do
     shift
 done
 
-OPM_MODULES="opm-common opm-grid opm-models opm-simulators opm-upscaling"
+OPM_MODULES="opm-common opm-grid opm-simulators opm-upscaling"
 DIR=$HOME/opm-release-test/
 mkdir -p $DIR
 cd $DIR
