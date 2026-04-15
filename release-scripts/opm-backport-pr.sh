@@ -34,7 +34,7 @@ set -x
 PR=$1
 
 # Release ID.
-RELEASE=${2:-2025.04}
+RELEASE=${2:-2026.04}
 
 # Local name of the main upstream repo, https://github.com/OPM/<opm-module>
 UPSTREAM=${3:-upstream}
