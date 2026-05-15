@@ -109,6 +109,7 @@ then
     docker run --shm-size=2048m \
                --rm \
                -u $(id -u) \
+               -e ghprbCommentBody="${ghprbCommentBody}" \
                ${BUILDTHREADS:+-e BUILDTHREADS=${BUILDTHREADS}} \
                -v ${ROOT_DIR}:/build \
                -v ${PROJECT_BINARY_DIR}/ccache:/ccache \
