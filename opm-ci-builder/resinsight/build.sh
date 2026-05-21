@@ -13,7 +13,8 @@ then
 fi
 
 source /python_env/bin/activate
-pip3 install -r GrpcInterface/Python/dev-requirements.txt
+echo '__version__ = "0.0.0.dev"' > GrpcInterface/Python/rips/_version.py
+pip3 install -e GrpcInterface/Python[dev]
 
 mkdir build
 cd build
