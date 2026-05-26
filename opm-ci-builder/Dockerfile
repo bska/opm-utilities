@@ -53,7 +53,7 @@ RUN apt-get install -y cmake g++-14 git pkg-config ninja-build lld-20 clang-tidy
                        libxerces-c-dev xsdcxx libgmp-dev  \
                        ocl-icd-opencl-dev opencl-c-headers \
                        libfmt-dev libcjson-dev xml-twig-tools \
-                       cuda-compiler-13.0 cuda-libraries-dev-13.0 cuda-nvtx-13.0 \
+                       cuda-compiler-13.2 cuda-libraries-dev-13.2 cuda-nvtx-13.2 \
                        libpython3-dev python3-virtualenv python-is-python3 \
                        rocm rocm-hip-libraries rocm-hip-runtime rocm-language-runtime \
                        rocm-hip-runtime-dev rocm-hip-sdk
