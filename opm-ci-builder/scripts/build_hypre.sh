@@ -5,6 +5,7 @@ set -e
 git clone https://github.com/hypre-space/hypre
 cd hypre
 git checkout $1
+patch -p1 < /tmp/opm/patches/hypre/fix_finalize.patch
 mkdir -p src/build
 cd src/build
 cmake .. -GNinja -DCMAKE_C_COMPILER=/usr/lib/ccache/gcc \
@@ -40,7 +41,6 @@ ninja install
 cd ../..
 
 
-patch -p1 < /tmp/opm/patches/hypre/0001-fix_hip_build.patch
 mkdir -p src/build_hip
 
 cd src/build_hip

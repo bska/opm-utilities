@@ -70,8 +70,8 @@ RUN scripts/setup_system_options.sh ${uid}
 RUN scripts/build_dune.sh
 
 # Build hypre
-# Need to build from master branch to have rocm 7.0 fixes
-RUN scripts/build_hypre.sh fca98afcd78a26b784dc24b0c3edb0e6140598af
+# Need to build from master branch to have CUDA 13.2 fixes
+RUN scripts/build_hypre.sh 89e7e8da73de9a0d7885ae32a417bb556d4fccc5
 
 # Build damaris
 RUN scripts/build_damaris.sh v1.12.1
