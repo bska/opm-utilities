@@ -92,7 +92,7 @@ cmake .. -GNinja -DCMAKE_C_COMPILER=/usr/bin/mpicc \
 ninja install
 
 # Build fmt
-git clone --depth 1 --branch 9.1.0 https://github.com/fmtlib/fmt
+git clone --depth 1 --branch 11.1.1 https://github.com/fmtlib/fmt
 mkdir -p fmt/build_debug
 cd fmt/build_debug
 cmake .. -DCMAKE_BUILD_TYPE=Debug \
