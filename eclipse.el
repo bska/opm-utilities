@@ -608,7 +608,7 @@ are in what could be a an incomplete string."
 			  (progn (setq instring nil) t)))
 	    ;; The next line emulates re-search-foward
 	    (if instring (goto-char (match-end 0)))
-	    (if (or (= ?- (preceding-char)))
+	    (if (= ?- (preceding-char))
 		;; Here we are in a comment for the rest of it.
 		;; thus returnme is a force-false.
 		(goto-char p)
