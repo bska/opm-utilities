@@ -1,8 +1,8 @@
-;;; eclipse.el --- major mode for ECLIPSE dot-DATA files
+;;; eclipse.el --- major mode for ECLIPSE dot-DATA files  -*- lexical-binding: t; -*-
 ;;
 ;; $Id:$
 ;; 
-;; Merged from Jan Rivenæs and Alf B. Rustad by Håvard Berland.
+;; Merged from Jan Rivenï¿½s and Alf B. Rustad by Hï¿½vard Berland.
 ;;
 ;; Copyright (C) 2005-2014 Statoil
 ;; Copyright (C) 1997-2003 Eric M. Ludlam
@@ -53,6 +53,16 @@
 (require 'tempo)
 (require 'derived)
 
+;; Declare functions referenced but not yet defined (planned/stub functionality)
+(declare-function eclipse-ltype-empty "eclipse")
+(declare-function eclipse-comm-from-prev "eclipse")
+(declare-function eclipse-lattr-comm "eclipse")
+(declare-function eclipse-indent-line "eclipse")
+(declare-function eclipse-ltype-comm "eclipse")
+(declare-function eclipse-calc-indent "eclipse")
+(declare-function eclipse-beginning-of-command "eclipse")
+(declare-function eclipse-end-of-command "eclipse")
+
 (defconst eclipse-mode-version "1.1"
   "Current version of ECLIPSE mode.")
 
@@ -71,6 +81,11 @@
     (defmacro defface (&rest args) nil)
     (defmacro defcustom (var value doc &rest args)
       `(defvar (, var) (, value) (, doc)))))
+;; Declare XEmacs-only function to suppress byte-compiler warning in GNU Emacs
+(declare-function start-itimer "itimer"
+                  (name function value &optional restart is-idle with-args
+                        &rest function-arguments))
+
 ;; compatibility
 (if (string-match "X[Ee]macs" emacs-version)
     (progn
@@ -124,7 +139,7 @@ M-file buffer."
 (defun eclipse-with-emacs-link ()
   "Return non-nil if Emacs Link is running."
   (and (featurep 'eclipse-eei)
-       eclipse-eei-process))
+       (bound-and-true-p eclipse-eei-process)))
 
 ;;; User-changeable variables =================================================
 
@@ -135,9 +150,11 @@ M-file buffer."
   :group 'languages)
 
 ;; Remove this when cursor-in-string and cursor-in-comment is fixed
-(defcustom eclipse-elipsis-string "@£"
+(defcustom eclipse-elipsis-string "@ï¿½"
   "Text used to perform continuation on code lines.
-This is used to generate and identify continuation lines.")
+This is used to generate and identify continuation lines."
+  :group 'eclipse
+  :type 'string)
 
 (defcustom eclipse-comment-line-s "-- "
   "*String to start comment on line by itself."
@@ -173,8 +190,8 @@ If font lock is not loaded, lay in wait."
 	(defface eclipse-unterminated-string-face
 	  (list
 	   (list t
-		 (list :background (face-background font-lock-string-face)
-		       :foreground (face-foreground font-lock-string-face)
+		 (list :background (face-background 'font-lock-string-face)
+		       :foreground (face-foreground 'font-lock-string-face)
 		       :underline t)))
 	  "*Face used to highlight unterminated strings."
 	  :group 'eclipse)
@@ -186,7 +203,7 @@ If font lock is not loaded, lay in wait."
 		      'eclipse-unterminated-string-face))
 	  (t
 	   (make-face 'eclipse-unterminated-string-face)))
-    (set-face-underline-p 'eclipse-unterminated-string-face t)
+    (set-face-attribute 'eclipse-unterminated-string-face nil :underline t)
     )
 )
 
@@ -416,7 +433,6 @@ Convenient editing commands are:
      "----"
      ["Version" eclipse-show-version t]
 ))
-  (easy-menu-add eclipse-mode-menu eclipse-mode-map)
 )
 
 ;;; Comment management========================================================
@@ -592,7 +608,7 @@ are in what could be a an incomplete string."
 			  (progn (setq instring nil) t)))
 	    ;; The next line emulates re-search-foward
 	    (if instring (goto-char (match-end 0)))
-	    (if (or (= -- (preceding-char)))
+	    (if (or (= ?- (preceding-char)))
 		;; Here we are in a comment for the rest of it.
 		;; thus returnme is a force-false.
 		(goto-char p)
